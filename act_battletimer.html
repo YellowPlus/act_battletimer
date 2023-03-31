@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <title>Battle Timer</title>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ZCube.github.io/ACTWebSocket/Sample/actwebsocket.js"></script>
+        <script type="text/javascript" src="https://ZCube.github.io/ACTWebSocket/Sample/actwebsocket_compat.js"></script>
+        <style type="text/css">
+            body {
+                font-family: sans-serif;
+                font-size: 24px;
+                color: #fff1c7;
+                text-shadow: #7c6a34 0px 0px 3px, #7c6a34 0px 0px 5px, #7c6a34 0px 0px 10px;
+                background-color: rgba(0, 0, 0, 0.2);
+                overflow: hidden;
+            }
+            div {
+                display: inline-block;
+            }
+            #battle_time {
+                margin-left: 5px;
+                margin-right: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="battle_time">Battle Time: 00:00</div>
+        <div id="battle_counter">Engage: 00</div>
+        <script type="text/javascript">
+            var isEngaged = false
+            var zonename = "";
+            var counter = 0;
+            document.addEventListener('onOverlayDataUpdate', function (e) {
+                var battleTime = document.getElementById('battle_time');
+                var battleCounter = document.getElementById('battle_counter');
+                battleTime.innerHTML = "Battle Time: " + e.detail.Encounter.duration;
+                if (!e.detail.isActive) {
+                    isEngaged = false;
+                }
+                if (e.detail.Encounter.CurrentZoneName != zonename) {
+                    zonename = e.detail.Encounter.CurrentZoneName;
+                    counter = 0;
+                }
+                if (e.detail.isActive && !isEngaged) {
+                    isEngaged = true;
+                    counter += 1;
+                    battleCounter.innerHTML = "Engage: " + counter.toLocaleString('en-US', {minimumIntegerDigits: 2});
+                }
+            });
+        </script>
+    </body>
+</html>
